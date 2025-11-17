@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.opengoofy.index12306.framework.starter.common.threadpool.build;
 
 import org.opengoofy.index12306.framework.starter.designpattern.builder.Builder;
@@ -25,7 +8,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 线程工厂 {@link ThreadFactory} 构建器, 构建者模式
- * 公众号：马丁玩编程，回复：加群，添加马哥微信（备注：12306）获取项目资料
+ * 和传统的建造者模式不太一样，因为ThreadFactory没有成员变量，传入的参数只是用于方法中线程的创建
+ * 这里建造者更像是配置器
  */
 public final class ThreadFactoryBuilder implements Builder<ThreadFactory> {
 
@@ -89,6 +73,7 @@ public final class ThreadFactoryBuilder implements Builder<ThreadFactory> {
         final Integer priority = builder.priority;
         final Thread.UncaughtExceptionHandler handler = builder.uncaughtExceptionHandler;
         final AtomicLong count = (null == namePrefix) ? null : new AtomicLong();
+        // 传入的是Runnable对象，通过lambda构造了一个ThreadFactory
         return r -> {
             final Thread thread = backingThreadFactory.newThread(r);
             if (null != namePrefix) {

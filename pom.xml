@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opengoofy.index12306</groupId>
     <artifactId>index12306-all</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <version>0.0.1-SNAPSHOT</version> <!-- 版本号，SNAPSHOT表示快照版本，表示还在开发中 -->
+    <packaging>pom</packaging> <!-- 打包方式为pom，表示这是一个父模块 -->
 
     <description>
         🔥热门推荐🔥大学春招、秋招、应届项目，SpringBoot3+Java17+SpringCloudAlibaba+RocketMQ等技术架构，完成铁路12306用户+购票+订单+支付服务，帮助学生主打就业的项目。
@@ -25,10 +25,13 @@
             <url>https://github.com/2084276225</url>
         </developer>
     </developers>
-
+    
+    <!-- 定义一些全局属性，所有子模块都会继承这些属性 -->
+    <!-- 这些属性后面作为变量使用，统一存放便于修改-->
     <properties>
         <java.version>17</java.version>
         <spotless-maven-plugin.version>2.22.1</spotless-maven-plugin.version>
+        <!-- 跳过检查style检查 -->
         <skip.checkstyle.check>true</skip.checkstyle.check>
         <maven-common-plugin.version>3.1.0</maven-common-plugin.version>
         <maven.compiler.target>17</maven.compiler.target>
@@ -36,10 +39,11 @@
         <lombok.version>1.18.30</lombok.version>
     </properties>
 
+    <!-- 所有子模块都会继承这个POM的配置 -->
     <modules>
-        <module>dependencies</module>
-        <module>frameworks</module>
-        <module>services</module>
+        <module>dependencies</module> <!-- 依赖管理模块，统一管理所有依赖版本 -->
+        <module>frameworks</module> <!-- 框架层模块 -->
+        <module>services</module> <!-- 服务层模块 -->
         <module>tests</module>
     </modules>
 
@@ -56,14 +60,16 @@
         </dependency>
     </dependencies>
 
+    <!-- 依赖管理，所有子模块都会继承这个依赖管理 -->
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <!-- 依赖的依赖管理模块 -->
                 <groupId>org.opengoofy.index12306</groupId>
                 <artifactId>index12306-dependencies</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>
-                <scope>import</scope>
+                <scope>import</scope> <!-- 导入依赖管理模块 -->
             </dependency>
         </dependencies>
     </dependencyManagement>

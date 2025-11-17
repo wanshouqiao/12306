@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.opengoofy.index12306.framework.starter.common.threadpool.support.eager;
 
 import java.util.concurrent.RejectedExecutionException;
@@ -26,7 +9,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 快速消费线程池
- * 公众号：马丁玩编程，回复：加群，添加马哥微信（备注：12306）获取项目资料
  */
 public class EagerThreadPoolExecutor extends ThreadPoolExecutor {
 
@@ -39,7 +21,7 @@ public class EagerThreadPoolExecutor extends ThreadPoolExecutor {
                                    RejectedExecutionHandler handler) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, handler);
     }
-
+    // 提交任务计数
     private final AtomicInteger submittedTaskCount = new AtomicInteger(0);
 
     public int getSubmittedTaskCount() {
@@ -48,7 +30,7 @@ public class EagerThreadPoolExecutor extends ThreadPoolExecutor {
 
     @Override
     protected void afterExecute(Runnable r, Throwable t) {
-        submittedTaskCount.decrementAndGet();
+        submittedTaskCount.decrementAndGet();  // 正常完成的任务通过此方法减计数
     }
 
     @Override
@@ -56,9 +38,10 @@ public class EagerThreadPoolExecutor extends ThreadPoolExecutor {
         submittedTaskCount.incrementAndGet();
         try {
             super.execute(command);
-        } catch (RejectedExecutionException ex) {
+        } catch (RejectedExecutionException ex) {  // 线程数大于最大线程数时会拒绝
             TaskQueue taskQueue = (TaskQueue) super.getQueue();
             try {
+                // 线程池没关闭，就把被拒绝的线程放到阻塞队列中，如果没成功（队列满了），就把提交任务数量-1
                 if (!taskQueue.retryOffer(command, 0, TimeUnit.MILLISECONDS)) {
                     submittedTaskCount.decrementAndGet();
                     throw new RejectedExecutionException("Queue capacity is full.", ex);

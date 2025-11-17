@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.opengoofy.index12306.framework.starter.distributedid.core.snowflake;
 
 import cn.hutool.core.date.SystemClock;
@@ -68,7 +51,9 @@ public class Snowflake implements Serializable, IdGenerator {
     private static final long WORKER_ID_BITS = 5L;
 
     // 最大支持机器节点数0~31，一共32个
+    // 这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数，用于得到一个掩码，掩码保证位数不超
     @SuppressWarnings({"PointlessBitwiseExpression", "FieldCanBeLocal"})
+    // -1是全1，左移n位，n个低位变为0，随后和全1异或，得到的是低位的n个1，大小为2^n-1
     private static final long MAX_WORKER_ID = -1L ^ (-1L << WORKER_ID_BITS);
 
     private static final long DATA_CENTER_ID_BITS = 5L;
@@ -95,7 +80,7 @@ public class Snowflake implements Serializable, IdGenerator {
     /**
      * 初始化时间点
      */
-    private final long twepoch;
+    private final long twepoch;  // Twitter Epoch时间戳基准点
 
     private final long workerId;
 

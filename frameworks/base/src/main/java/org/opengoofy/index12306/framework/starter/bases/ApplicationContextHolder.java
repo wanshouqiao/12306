@@ -25,8 +25,10 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 
 /**
- * Application context holder.
- * 公众号：马丁玩编程，回复：加群，添加马哥微信（备注：12306）获取项目资料
+ * Application context holder.全局桥梁
+ * ApplicationContextHolder 是一个全局的 Spring 容器访问器，
+ * 用来把 ApplicationContext 缓存到一个静态字段里，方便在非 Spring 管理的类
+ * （如静态方法、工具类、线程、拦截器等）里获取 Bean。
  */
 public class ApplicationContextHolder implements ApplicationContextAware {
 
