@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.opengoofy.index12306.biz.aggregationservice;
 
 import cn.crane4j.spring.boot.annotation.EnableCrane4j;
@@ -27,27 +10,31 @@ import org.springframework.retry.annotation.EnableRetry;
 
 /**
  * 12306 聚合服务应用启动器
- * 公众号：马丁玩编程，回复：加群，添加马哥微信（备注：12306）获取项目资料
  */
-@EnableDynamicThreadPool
+@EnableDynamicThreadPool  // 启用 Hippo4j 提供的动态线程池能力，便于运行时调整线程池大小、阈值等
 @SpringBootApplication(scanBasePackages = {
+        // 启动 Spring Boot，并指定要扫描的基础包。聚合服务需要整合用户、车票、订单、支付、以及自身模块，
+        // 所以列出这些包以便加载到同一个应用上下文
         "org.opengoofy.index12306.biz.userservice",
         "org.opengoofy.index12306.biz.ticketservice",
         "org.opengoofy.index12306.biz.orderservice",
         "org.opengoofy.index12306.biz.payservice",
         "org.opengoofy.index12306.biz.aggregationservice"
 })
-@EnableRetry
+@EnableRetry // 开启 Spring Retry，允许在需要的地方通过 @Retryable 实现重试机制，应对外部调用失败等情况
 @MapperScan(value = {
+        // 自动扫描 MyBatis Mapper 接口，避免每个接口上都加 @Mapper，并确保各业务模块的 DAO 层能被识别
         "org.opengoofy.index12306.biz.userservice.dao.mapper",
         "org.opengoofy.index12306.biz.ticketservice.dao.mapper",
         "org.opengoofy.index12306.biz.orderservice.dao.mapper",
         "org.opengoofy.index12306.biz.payservice.dao.mapper"
 })
 @EnableFeignClients(value = {
+        // 开启 Feign 客户端，指定远程调用接口所在包，聚合服务通过这些客户端去调用其他微服务。
         "org.opengoofy.index12306.biz.ticketservice.remote",
         "org.opengoofy.index12306.biz.orderservice.remote"
 })
+// 启用 Crane4j（数据填充/装配框架），扫描订单服务的枚举包，在聚合层做枚举转换或数据装配时可自动处理。
 @EnableCrane4j(enumPackages = "org.opengoofy.index12306.biz.orderservice.common.enums")
 public class AggregationServiceApplication {
 

@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.opengoofy.index12306.biz.aggregationservice.config;
 
 import cn.hippo4j.common.web.base.Result;
@@ -33,7 +16,7 @@ import java.io.PrintWriter;
 
 /**
  * 部署公网环境演示模式配置
- * 公众号：马丁玩编程，回复：加群，添加马哥微信（备注：12306）获取项目资料
+ * 这个类的作用就是保障公网演示环境下，受限制的接口不能被调用，避免对用户、乘车人等关键数据的改动。
  */
 @Configuration
 @RequiredArgsConstructor
@@ -44,7 +27,7 @@ public class DemoModeConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new DemoModeInterceptor())
-                .addPathPatterns("/**");
+                .addPathPatterns("/**");  // 放行所有路径，不过在这之前，先执行了preHandle过滤掉了黑名单操作
     }
 
     public class DemoModeInterceptor implements HandlerInterceptor {

@@ -27,12 +27,12 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * 应用基础自动装配
- * 公众号：马丁玩编程，回复：加群，添加马哥微信（备注：12306）获取项目资料
+ * 用来把 Base 模块提供的几个核心 Bean 在应用启动时自动注册进 Spring 容器
  */
 public class ApplicationBaseAutoConfiguration {
 
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean  // 确保只有在容器里没有相同 Bean 时才创建
     public ApplicationContextHolder congoApplicationContextHolder() {
         return new ApplicationContextHolder();
     }
